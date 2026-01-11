@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="fanuc_crx10ial_gripper">
+
+  <xacro:include filename="$(find fanuc_crx10ia_support)/urdf/crx10ial_macro.xacro"/>
+  
+  <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro" />
+
+  <xacro:fanuc_crx10ial prefix=""/>
+
+  <ros2_control name="FanucArmSystem" type="system">
+    <hardware>
+      <plugin>mock_components/GenericSystem</plugin>
+    </hardware>
+    <joint name="joint_1">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_2">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_3">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_4">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_5">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_6">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <xacro:robotiq_gripper name="RobotiqGripper" prefix="" parent="tool0"
+    sim_ignition="false"
+    sim_isaac="false"
+    use_fake_hardware="true"
+    mock_sensor_commands="false"
+    gripper_speed_multiplier="1.0"
+    gripper_force_multiplier="0.5"
+    gripper_max_speed="0.150"
+    gripper_max_force="235.0"
+    gripper_closed_position="0.7929">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:robotiq_gripper>
+
+</robot>
