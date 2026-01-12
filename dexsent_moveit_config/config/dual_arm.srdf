@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<robot name="dual_fanuc">
+    <group name="left_arm">
+        <chain base_link="left_base_link" tip_link="left_tool0"/>
+    </group>
+    <group name="right_arm">
+        <chain base_link="right_base_link" tip_link="right_tool0"/>
+    </group>
+    <group_state name="home_left" group="left_arm">
+        <joint name="left_joint_1" value="0"/><joint name="left_joint_2" value="0"/>
+        <joint name="left_joint_3" value="0"/><joint name="left_joint_4" value="0"/>
+        <joint name="left_joint_5" value="0"/><joint name="left_joint_6" value="0"/>
+    </group_state>
+    <group_state name="home_right" group="right_arm">
+        <joint name="right_joint_1" value="0"/><joint name="right_joint_2" value="0"/>
+        <joint name="right_joint_3" value="0"/><joint name="right_joint_4" value="0"/>
+        <joint name="right_joint_5" value="0"/><joint name="right_joint_6" value="0"/>
+    </group_state>
+</robot>

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="dual_fanuc">
+  <xacro:include filename="$(find fanuc_crx10ia_support)/urdf/crx10ial_macro.xacro"/>
+  <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro"/>
+
+  <link name="world"/>
+
+  <xacro:fanuc_crx10ial prefix="left_"/>
+  <joint name="world_to_left" type="fixed">
+    <parent link="world"/>
+    <child link="left_base_link"/>
+    <origin xyz="0 0.75 0" rpy="0 0 0.785"/> 
+  </joint>
+  <xacro:robotiq_gripper name="LeftGripper" prefix="left_" parent="left_tool0"
+    use_fake_hardware="true" gripper_speed_multiplier="1.0" gripper_force_multiplier="0.5"
+    gripper_max_speed="0.150" gripper_max_force="235.0" gripper_closed_position="0.7929">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:robotiq_gripper>
+
+  <xacro:fanuc_crx10ial prefix="right_"/>
+  <joint name="world_to_right" type="fixed">
+    <parent link="world"/>
+    <child link="right_base_link"/>
+    <origin xyz="0 -0.75 0" rpy="0 0 -0.785"/> 
+  </joint>
+  <xacro:robotiq_gripper name="RightGripper" prefix="right_" parent="right_tool0"
+    use_fake_hardware="true" gripper_speed_multiplier="1.0" gripper_force_multiplier="0.5"
+    gripper_max_speed="0.150" gripper_max_force="235.0" gripper_closed_position="0.7929">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:robotiq_gripper>
+</robot>
