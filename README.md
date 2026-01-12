@@ -3,6 +3,8 @@
 ## Project Overview
 This repository implements a dual-arm robotic setup using two **Fanuc CRX-10iA** robots with **Robotiq 2F-85** grippers. The system is built on **ROS 2 Humble** and uses **MoveIt 2** for motion planning and trajectory execution.
 
+![Arm Setup](image_2.png)
+
 ## Key Features
 * **Dual-Arm Configuration:** Two robots mounted at 45° relative to the world frame.
 * **Gripper Integration:** Integrated Robotiq 2F-85 grippers with custom URDF/Xacro macros.
