@@ -112,3 +112,5 @@ rosdep install --from-paths src --ignore-src -r -y
 ## Authors
 * **Name:** SRINJOY GANGULY
 * **Affiliation:** IIT Kharagpur
+
+![Dual Arm Setup](image_1.png)
