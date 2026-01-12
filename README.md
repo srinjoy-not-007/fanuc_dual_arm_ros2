@@ -11,9 +11,9 @@ This repository implements a dual-arm robotic setup using two **Fanuc CRX-10iA**
 
 ## Evaluation Tasks
 * **Task 1:** Single Robot Setup & Gripper Integration (Completed).
-* **Task 2:** Dual-Arm System Setup (In Progress/Completed).
+* **Task 2:** Dual-Arm System Setup (Completed).
 
-## Installation
+## Native Installation
 
 ### Prerequisites
 * Ubuntu 22.04 (Jammy Jellyfish)
@@ -24,7 +24,7 @@ This repository implements a dual-arm robotic setup using two **Fanuc CRX-10iA**
 # 1. Clone the repository
 mkdir -p ~/ws/src
 cd ~/ws/src
-git clone <YOUR_REPO_URL> .
+git clone https://github.com/srinjoy-not-007/fanuc_dual_arm_ros2.git .
 
 # 2. Install dependencies
 cd ~/ws
@@ -48,6 +48,61 @@ Visualizes two robots mounted at 45-degree angles.
 ```bash
 ros2 launch dexsent_moveit_config view_dual_arm.launch.py
 ```
+
+#### Enabling Cartesian Control in RViz
+
+1. Set Fixed Frame to world
+
+2. Open the MotionPlanning panel
+
+3. Select left_arm or right_arm under Planning Group
+
+4. Drag the interactive marker to move the arm in Cartesian space
+
+## 🐳 Docker Setup (Recommended)
+
+This project was developed and tested inside a **Docker container** to ensure a consistent and reproducible environment. This is the **recommended** setup method.
+
+### Run the Container
+
+To enable RViz visualization, X11 forwarding must be enabled.
+
+#### For Linux Users
+
+```bash
+xhost +local:root
+docker run -it \
+    --name fanuc_ros2 \
+    --env="DISPLAY" \
+    --env="QT_X11_NO_MITSHM=1" \
+    --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+    osrf/ros:humble-desktop
+```
+### Set Up the Workspace Inside Docker
+
+Once inside the container terminal:
+
+```bash
+# Update and install required tools
+apt-get update && apt-get install -y \
+    git \
+    python3-colcon-common-extensions \
+    python3-rosdep
+
+# Create workspace
+mkdir -p ~/ws/src
+cd ~/ws/src
+
+# Clone the repository
+git clone https://github.com/srinjoy-not-007/fanuc_dual_arm_ros2.git .
+
+# Install dependencies
+cd ~/ws
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y
+
+```
+
 
 ## Technical Approach
 * **Modular URDF:** The robot description is built using modular Xacro macros, allowing for easy addition of grippers and multiple arms.
