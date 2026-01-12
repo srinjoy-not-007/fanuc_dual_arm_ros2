@@ -1,0 +1,30 @@
+controller_list:
+  - name: fake_both_arms_controller
+    type: FollowJointTrajectory
+    default: true
+    joints:
+      - left_joint_1
+      - left_joint_2
+      - left_joint_3
+      - left_joint_4
+      - left_joint_5
+      - left_joint_6
+      - right_joint_1
+      - right_joint_2
+      - right_joint_3
+      - right_joint_4
+      - right_joint_5
+      - right_joint_6
+    initial:
+      left_joint_1: 0.0
+      left_joint_2: 0.0
+      left_joint_3: 0.0
+      left_joint_4: 0.0
+      left_joint_5: 0.0
+      left_joint_6: 0.0
+      right_joint_1: 0.0
+      right_joint_2: 0.0
+      right_joint_3: 0.0
+      right_joint_4: 0.0
+      right_joint_5: 0.0
+      right_joint_6: 0.0

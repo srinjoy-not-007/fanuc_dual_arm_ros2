@@ -12,46 +12,63 @@ def load_yaml(package_name, file_path):
         with open(absolute_file_path, 'r') as file:
             return yaml.safe_load(file)
     except EnvironmentError:
-        return None
+        return {}
 
 def generate_launch_description():
-    # 1. Load Robot Description (URDF)
+    # 1. Load Robot Description
     urdf_file = os.path.join(get_package_share_directory('dexsent_description'), 'urdf', 'dual_arm.xacro')
     doc = xacro.process_file(urdf_file)
     robot_description = {'robot_description': doc.toxml()}
 
-    # 2. Load Semantic Description (SRDF)
+    # 2. Load SRDF
     srdf_file = os.path.join(get_package_share_directory('dexsent_moveit_config'), 'config', 'dual_arm.srdf')
     with open(srdf_file, 'r') as f:
         semantic_content = f.read()
     robot_description_semantic = {'robot_description_semantic': semantic_content}
 
-    # 3. Load Kinematics
+    # 3. Load Configs
     kinematics_yaml = load_yaml('dexsent_moveit_config', 'config/kinematics.yaml')
-    
-    # 4. Load OMPL Planning (The missing piece!)
     ompl_planning_yaml = load_yaml('dexsent_moveit_config', 'config/ompl_planning.yaml')
-    
-    # 5. Common Parameters for Nodes
+    fake_controllers_yaml = load_yaml('dexsent_moveit_config', 'config/fake_controllers.yaml')
+
+    # *** FORCE THE CONTROLLER MANAGER PARAMETER ***
+    # We add this directly to the dictionary to ensure it cannot be ignored
+    if fake_controllers_yaml is None:
+        fake_controllers_yaml = {}
+    fake_controllers_yaml['moveit_controller_manager'] = 'moveit_fake_controller_manager/MoveItFakeControllerManager'
+
+    # 4. Move Group Parameters
     move_group_params = [
         robot_description,
         robot_description_semantic,
-        robot_description_kinematics := {'robot_description_kinematics': kinematics_yaml},
+        {'robot_description_kinematics': kinematics_yaml},
         {'planning_pipelines': ['ompl']},
         {'ompl': ompl_planning_yaml},
+        fake_controllers_yaml, # Now contains the manager setting inside it
+        {'moveit_manage_controllers': True},
         {'use_sim_time': True},
-        {'moveit_manage_controllers': False}, # Mock execution only
-        {'moveit_controller_manager': 'moveit_simple_controller_manager/MoveItSimpleControllerManager'},
     ]
 
     return LaunchDescription([
         # A. Publish Robot State
-        Node(package='robot_state_publisher', executable='robot_state_publisher', output='screen', parameters=[robot_description]),
-        
-        # B. Publish Fake Joint States (since we have no real controllers)
-        Node(package='joint_state_publisher_gui', executable='joint_state_publisher_gui', name='joint_state_publisher_gui'),
+        Node(
+            package='robot_state_publisher', 
+            executable='robot_state_publisher', 
+            output='screen', 
+            parameters=[robot_description]
+        ),
 
-        # C. THE BRAIN: Start MoveGroup Node
+        # B. Fake Joint Driver
+        # Listens to the fake controller output and publishes joint states
+        Node(
+            package='joint_state_publisher',
+            executable='joint_state_publisher',
+            name='joint_state_publisher',
+            output='screen',
+            parameters=[{'source_list': ['/move_group/fake_controller_joint_states']}, {'use_sim_time': True}]
+        ),
+
+        # C. Start MoveGroup
         Node(
             package='moveit_ros_move_group',
             executable='move_group',
@@ -59,7 +76,7 @@ def generate_launch_description():
             parameters=move_group_params,
         ),
 
-        # D. The Visualizer (RViz)
+        # D. Start RViz
         Node(
             package='rviz2',
             executable='rviz2',
@@ -68,8 +85,8 @@ def generate_launch_description():
             parameters=[
                 robot_description,
                 robot_description_semantic,
-                robot_description_kinematics,
-                {'ompl': ompl_planning_yaml} 
+                {'robot_description_kinematics': kinematics_yaml},
+                {'ompl': ompl_planning_yaml}
             ]
         )
     ])

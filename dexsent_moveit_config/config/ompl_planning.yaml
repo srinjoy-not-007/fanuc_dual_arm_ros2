@@ -10,14 +10,17 @@ request_adapters: >-
 planner_configs:
   RRTConnect:
     type: geometric::RRTConnect
-    range: 0.0  # Default
+    range: 0.0
 
 left_arm:
   default_planner_config: RRTConnect
   planner_configs:
     - RRTConnect
-
 right_arm:
+  default_planner_config: RRTConnect
+  planner_configs:
+    - RRTConnect
+both_arms:
   default_planner_config: RRTConnect
   planner_configs:
     - RRTConnect
